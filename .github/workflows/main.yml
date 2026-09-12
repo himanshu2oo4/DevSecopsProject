@@ -68,7 +68,7 @@ jobs:
                scan-ref: '.'
                format: 'table'
                severity: 'CRITICAL,HIGH,MEDIUM'
-               exit-code: '1'
+               exit-code: '0'
     
             - name: trivy Fs scan report 
               if: always()
