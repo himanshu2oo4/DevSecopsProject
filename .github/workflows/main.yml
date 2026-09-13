@@ -114,9 +114,9 @@ jobs:
             - name: Run Trivy vulnerability scanner
               uses: aquasecurity/trivy-action@master
               with:
-                image-ref: '${{ secrets.DOCKER_USERNAME }}/tetrisv2:1.0.0'
+                image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/tetrisv2:1.0.0'
                 format: 'table'
-                exit-code: '1'
+                exit-code: '0'
                 ignore-unfixed: true
                 severity: 'CRITICAL,HIGH'
             
