@@ -89,4 +89,51 @@ jobs:
                 name: trivy-fs-report
                 path: trivy-fs-report.json
 
+    Docker-stuffs: 
+        runs-on: ubuntu-latest
+        defaults: 
+            run: 
+                working-directory: ./Tetris-V2 
+        steps: 
+            - name: checkout code 
+              uses: actions/checkout@v4
+
+            - name: Setting up nodejs 
+              uses: actions/setup-node@v1
+              with: 
+                node-version: 16  
+            - name: Installing dependencies 
+              run: npm ci 
+            
+            - name: Building the docker image 
+              run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/tetrisV2:1.0.0 . 
+
+            
+            # after building lets go for a trivy image scan 
+            - name: Run Trivy vulnerability scanner
+              uses: aquasecurity/trivy-action@master
+              with:
+                image-ref: '${{ secrets.DOCKER_USERNAME }}/tetrisV2:1.0.0'
+                format: 'table'
+                exit-code: '1'
+                ignore-unfixed: true
+                severity: 'CRITICAL,HIGH'
+            
+            # setting up docker build x : provides more advanced capabilities 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
+            - name: Pushing to dockerHUB 
+              run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisV2:1.0.0
+
+
+            
+
+            
     
