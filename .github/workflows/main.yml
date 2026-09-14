@@ -131,7 +131,7 @@ jobs:
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Pushing to dockerHUB 
-              run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisV2:1.0.0
+              run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
 
 
             
