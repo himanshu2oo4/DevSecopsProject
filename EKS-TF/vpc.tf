@@ -1,55 +1,32 @@
-data "aws_vpc" "vpc" {
-  filter {
-    name   = "tag:Name"
-    values = [var.vpc-name]
-  }
-}
+# using terraform vpc module to create one instead of writing from scratch 
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws" # through this line the tf will goes to tf registry and search for this module 
+  # and download vpc module in .terraform/
+  name = "${var.cluster_name}-vpc"
+  cidr = var.vpc_cidr
 
-data "aws_internet_gateway" "igw" {
-  filter {
-    name   = "tag:Name"
-    values = [var.igw-name]
-  }
-}
+  azs             = var.availability_zones
+  private_subnets = var.private_subnets
+  public_subnets  = var.public_subnets
 
-data "aws_subnet" "subnet" {
-  filter {
-    name   = "tag:Name"
-    values = [var.subnet-name]
-  }
-}
+  enable_nat_gateway   = true
+  single_nat_gateway   = true # in production go for one nat gateway per az 
+  enable_vpn_gateway   = true
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
-data "aws_security_group" "sg-default" {
-  filter {
-    name   = "tag:Name"
-    values = [var.security-group-name]
-  }
-}
+  # bcoz of this aws will create internet facing load balancers 
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = "1"
+  } # This helps identify subnets suitable for internet-facing Kubernetes load balancers.
 
-resource "aws_subnet" "public-subnet2" {
-  vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = var.subnet-name2
-  }
-}
-
-resource "aws_route_table" "rt2" {
-  vpc_id = data.aws_vpc.vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = data.aws_internet_gateway.igw.id
+  # aws will create internal load balancer here 
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = "1"
   }
 
   tags = {
-    Name = var.rt-name2
+    Environment = "dev"
+    Terraform   = "true"
   }
-}
-
-resource "aws_route_table_association" "rt-association2" {
-  route_table_id = aws_route_table.rt2.id
-  subnet_id      = aws_subnet.public-subnet2.id
 }
