@@ -8,6 +8,7 @@ on:
             - main
     workflow_dispatch: 
 permissions: 
+    id-token: write 
     contents: read  
 jobs: 
     build-and-test: 
@@ -132,6 +133,38 @@ jobs:
 
             - name: Pushing to dockerHUB 
               run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
+
+    terraform-builds: 
+      defaults: 
+        run: 
+          working-directory: ./EKS-tf
+      runs-on: ubuntu-latest
+      steps: 
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Configure AWS credentials 
+            uses: aws-actions/configure-aws-credentials@v4
+            with: 
+              role-to-assume: arn:aws:iam::815802019107:role/GitHubActionsTerraformRole
+              aws-region: ap-south-1
+
+          - name: SetUp terraform 
+            uses: hashicorp/setup-terraform@v3 
+          
+          - name: terraform init 
+            run: terraform init 
+
+          - name: Terraform format check 
+            run: terraform fmt 
+          
+          - name: terraform validate 
+            run: terraform validate
+
+          - name: plan 
+            run: terraform plan 
+            
+
 
 
             
