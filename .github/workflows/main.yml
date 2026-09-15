@@ -176,7 +176,23 @@ jobs:
 
           - name: plan 
             run: terraform plan 
-            
+           
+          - name: Check AWS identity
+            run: aws sts get-caller-identity
+
+          - name: Check EKS cluster
+            run: aws eks describe-cluster `
+              --name tetris-eks-cluster `
+              --region ap-south-1 `
+              --query "cluster.status"
+
+          - name: Configure kubectl
+            run: aws eks update-kubeconfig `
+              --name tetris-eks-cluster `
+              --region ap-south-1
+
+          - name: Check Kubernetes nodes
+            run: kubectl get nodes
 
 
 
