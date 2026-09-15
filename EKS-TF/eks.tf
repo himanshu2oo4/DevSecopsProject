@@ -12,7 +12,7 @@ module "eks" {
   endpoint_public_access = true     # remember this doesn't means your nodes are public 
 
   # Gives the Terraform creator admin permissions to create your  cluster 
-  # enable_cluster_creator_admin_permissions = true
+  # enable_cluster_creator_admin_permissions = true # we dont need this if you are using github actions 
 
 
   # Allow GitHub Actions IAM role to access Kubernetes API
