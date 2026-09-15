@@ -135,6 +135,7 @@ jobs:
               run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
 
     terraform-builds: 
+      needs: Docker-builds 
       defaults: 
         run: 
           working-directory: EKS-TF
@@ -176,24 +177,11 @@ jobs:
           - name: Verify EKS access
             run: kubectl get nodes -o wide 
 
-          
-    K8s-Manifestos: 
-      needs: 
-        - terraform-builds
-        - Docker-builds
-      defaults: 
-        run: 
-          working-directory: Manifest-file
-      runs-on: ubuntu-latest 
-      steps: 
-          - name: checkout code 
-            uses: actions/checkout@v4 
-            
           - name: Deploying Namespace
-            run: kubectl apply -f namespace.yml 
+            run: kubectl apply -f ../Manifest-file/namespace.yml 
           
           - name: Deploying Tetris Application and service 
-            run: kubectl apply -f deployment-service.yml 
+            run: kubectl apply -f ../Manifest-file/deployment-service.yml 
           
           - name: Verify deployment 
             run: kubectl get all -n tetris 
