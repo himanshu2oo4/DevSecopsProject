@@ -15,22 +15,37 @@ module "eks" {
   # enable_cluster_creator_admin_permissions = true # we dont need this if you are using github actions 
 
 
-  # Allow GitHub Actions IAM role to access Kubernetes API
+  # Allow GitHub Actions and my IAM user an IAM role to access Kubernetes API
   access_entries = {
-    github_actions = {
-      principal_arn = "arn:aws:iam::815802019107:role/GitHubActionsTerraformRole"     # iam role recognized by eks cluster 
 
-      policy_associations = {
-        admin = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"   # provide k8s administrator access to this 
+  github_actions = {
+    principal_arn = "arn:aws:iam::815802019107:role/GitHubActionsTerraformRole"
 
-          access_scope = {
-            type = "cluster"         # access provided for the whole cluster not a particular  namespace 
-          }
+    policy_associations = {
+      admin = {
+        policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+        access_scope = {
+          type = "cluster"
         }
       }
     }
   }
+
+  local_user = {
+    principal_arn = "arn:aws:iam::815802019107:user/learner"
+
+    policy_associations = {
+      admin = {
+        policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+        access_scope = {
+          type = "cluster"
+        }
+      }
+    }
+  }
+}
 
 
 
