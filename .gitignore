@@ -9,7 +9,7 @@ github-**
 *.tfstate.*
 
 # Terraform variable files containing secrets
-*.tfvars
+
 *.tfvars.json
 
 # Crash logs

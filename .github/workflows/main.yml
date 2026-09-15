@@ -135,6 +135,7 @@ jobs:
               run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
 
     terraform-builds: 
+      needs: Docker-stuffs
       defaults: 
         run: 
           working-directory: ./EKS-tf
