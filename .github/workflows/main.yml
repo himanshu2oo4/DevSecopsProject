@@ -178,12 +178,17 @@ jobs:
 
           
     K8s-Manifestos: 
-      needs: terraform-builds
+      needs: 
+        - terraform-builds
+        - Docker-builds
       defaults: 
         run: 
           working-directory: Manifest-file
       runs-on: ubuntu-latest 
       steps: 
+          - name: checkout code 
+            uses: actions/checkout@v4 
+            
           - name: Deploying Namespace
             run: kubectl apply -f namespace.yml 
           
