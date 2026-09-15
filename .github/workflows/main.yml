@@ -150,7 +150,7 @@ jobs:
       # needs: Docker-builds 
       defaults: 
         run: 
-          working-directory: ./EKS-tf
+          working-directory: EKS-TF
       runs-on: ubuntu-latest
       steps: 
           - name: Checkout code
