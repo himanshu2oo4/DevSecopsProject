@@ -11,7 +11,7 @@ permissions:
     id-token: write 
     contents: read  
 jobs: 
-    build-and-test: 
+    Testing: 
         defaults: 
             run: 
                 working-directory: ./Tetris-V2
@@ -90,9 +90,9 @@ jobs:
                 name: trivy-fs-report
                 path: trivy-fs-report.json
 
-    Docker-stuffs: 
+    Docker-builds:
         runs-on: ubuntu-latest
-        needs: build-and-test 
+        needs: Testing 
         defaults: 
             run: 
                 working-directory: ./Tetris-V2 
@@ -135,7 +135,7 @@ jobs:
               run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
 
     terraform-builds: 
-      needs: Docker-stuffs
+      needs: Docker-builds 
       defaults: 
         run: 
           working-directory: ./EKS-tf
@@ -143,6 +143,31 @@ jobs:
       steps: 
           - name: Checkout code
             uses: actions/checkout@v4
+
+          - name: Debug OIDC Claims
+            shell: bash
+            run: |
+              TOKEN=$(curl -sSf \
+              -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+              "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" \
+              | jq -r '.value')
+
+              PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f 2)
+              PADDING=$((4 - ${#PAYLOAD} % 4))
+              if [ "$PADDING" -ne 4 ]; then
+                PAYLOAD="${PAYLOAD}$(printf '=%.0s' $(seq 1 $PADDING))"
+
+              fi
+              echo "$PAYLOAD" | base64 -d | jq '{
+                sub,
+                aud,
+                repository,
+                repository_id,
+                repository_owner,
+                repository_owner_id,
+                ref,
+                event_name
+              }'
 
           - name: Configure AWS credentials 
             uses: aws-actions/configure-aws-credentials@v4
