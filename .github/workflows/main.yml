@@ -180,6 +180,15 @@ jobs:
           - name: Applying configurations 
             run: terraform apply -auto-approve 
 
+          - name: Verify AWS identity
+            run: aws sts get-caller-identity
+
+          - name: Configure kubectl
+            run: aws eks update-kubeconfig --name tetris-eks-cluster --region ap-south-1
+
+          - name: Verify EKS access
+            run: kubectl get nodes
+
 
             
 
