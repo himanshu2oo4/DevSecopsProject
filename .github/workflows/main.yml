@@ -6,12 +6,22 @@ on:
     pull_request: 
         branches: 
             - main
-    workflow_dispatch: 
+    workflow_dispatch:
+      inputs:
+        job_to_run:
+          description: "Which job should run?"
+          required: true
+          type: choice
+          options:
+            - Testing
+            - Docker-builds
+            - terraform-builds 
 permissions: 
     id-token: write 
     contents: read  
 jobs: 
-    Testing: 
+    Testing:
+        if: ${{ inputs.job_to_run == 'Testing' }}
         defaults: 
             run: 
                 working-directory: ./Tetris-V2
@@ -91,6 +101,7 @@ jobs:
                 path: trivy-fs-report.json
 
     Docker-builds:
+        if: ${{ inputs.job_to_run == 'Docker-builds' }}
         runs-on: ubuntu-latest
         needs: Testing 
         defaults: 
@@ -135,7 +146,8 @@ jobs:
               run: docker push ${{secrets.DOCKERHUB_USERNAME}}/tetrisv2:1.0.0
 
     terraform-builds: 
-      needs: Docker-builds 
+      if: ${{ inputs.job_to_run == 'terraform-builds' }}
+      # needs: Docker-builds 
       defaults: 
         run: 
           working-directory: ./EKS-tf
