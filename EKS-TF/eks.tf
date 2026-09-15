@@ -15,6 +15,25 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
 
+  # Allow GitHub Actions IAM role to access Kubernetes API
+  access_entries = {
+    github_actions = {
+      principal_arn = "arn:aws:iam::815802019107:role/GitHubActionsTerraformRole"     # iam role recognized by eks cluster 
+
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"   # provide k8s administrator access to this 
+
+          access_scope = {
+            type = "cluster"         # access provided for the whole cluster not a particular  namespace 
+          }
+        }
+      }
+    }
+  }
+
+
+
   # EKS Managed Node Group
   eks_managed_node_groups = {
     main = {
@@ -55,6 +74,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  
 
   tags = {
     Environment = "dev"
