@@ -183,8 +183,18 @@ jobs:
           - name: Deploying Tetris Application and service 
             run: kubectl apply -f ../Manifest-file/deployment-service.yml 
           
-          - name: Verify deployment 
-            run: kubectl get all -n tetris 
+          - name: Verify deployment
+            run: |
+              for i in {1..6}; do
+                echo "========== Check $i/6 =========="
+                date
+                kubectl get deploy -n tetris
+                echo ""
+                sleep 5
+              done
+
+          - name: External Ip or URL For GAME 
+            run: kubectl get svc -n tetris 
             
 
             
