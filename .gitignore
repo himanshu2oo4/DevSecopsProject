@@ -1,9 +1,4 @@
 
-<<<<<<< HEAD
-
-=======
-github-**
->>>>>>> b153bc309bbfe29260771e2208673b32e309705f
 
 # Terraform
 .terraform/
@@ -27,3 +22,5 @@ override.tf.json
 *_override.tf.json
 
 # *.json
+encryption.json
+provider-schema.json 
