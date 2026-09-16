@@ -2,7 +2,7 @@ terraform {
 
   backend "s3" {
 
-    bucket = "himanshu-terraform-state-815802019107"
+    bucket = "your-backend-bucket-name"
 
     key = "eks/terraform.tfstate"
 
