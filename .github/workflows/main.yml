@@ -185,13 +185,8 @@ jobs:
           
           - name: Verify deployment
             run: |
-              for i in {1..6}; do
-                echo "========== Check $i/6 =========="
-                date
-                kubectl get deploy -n tetris
-                echo ""
-                sleep 5
-              done
+              kubectl rollout status deployment/tetris-deployment -n tetris --timeout=60s
+              kubectl get deploy -n tetris 
 
           - name: External Ip or URL For GAME 
             run: kubectl get svc -n tetris 
