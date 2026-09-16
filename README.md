@@ -172,7 +172,7 @@ The infrastructure is hosted in:
 
 **AWS Region:** `ap-south-1`
 
-**AWS Account:** `815802019107`
+**AWS Account:** `aws-acc-id`
 
 **EKS Cluster:** `tetris-eks-cluster`
 
@@ -256,11 +256,11 @@ The authentication flow is:
 
 The GitHub Actions IAM role is:
 
-`arn:aws:iam::815802019107:role/GitHubActionsTerraformRole`
+`arn:aws:iam::aws-acc-id:role/GitHubActionsTerraformRole`
 
 The GitHub OIDC provider is:
 
-`arn:aws:iam::815802019107:oidc-provider/token.actions.githubusercontent.com`
+`arn:aws:iam::aws-acc-id:oidc-provider/token.actions.githubusercontent.com`
 
 This removes the need to store a permanent AWS access key and secret key in GitHub Secrets.
 
@@ -310,7 +310,7 @@ Two identities are represented in the project.
 
 Principal:
 
-`arn:aws:iam::815802019107:role/GitHubActionsTerraformRole`
+`arn:aws:iam::aws-acc-id:role/GitHubActionsTerraformRole`
 
 The principal is associated with the AWS-managed EKS access policy:
 
@@ -324,7 +324,7 @@ This is what enables GitHub Actions to authenticate to the Kubernetes API and pe
 
 The local AWS identity was checked through the AWS CLI and is:
 
-`arn:aws:iam::815802019107:user/learner`
+`arn:aws:iam::aws-acc-id:user/learner`
 
 The same identity is intended to have a separate EKS Access Entry for local kubectl access.
 
@@ -352,7 +352,7 @@ The local Windows environment uses AWS CLI to create/update the Kubernetes confi
 
 The cluster context is:
 
-`arn:aws:eks:ap-south-1:815802019107:cluster/tetris-eks-cluster`
+`arn:aws:eks:ap-south-1:aws-acc-id:cluster/tetris-eks-cluster`
 
 The kubeconfig update succeeded, but local kubectl initially returned a credentials/authorization error because the `learner` IAM user had not yet been authorized through an EKS Access Entry.
 
