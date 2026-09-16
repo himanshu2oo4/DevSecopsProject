@@ -92,7 +92,7 @@ The important project areas are:
 
 - `Tetris-V2` — Tetris application source and Docker configuration
 - `EKS-tf` — Terraform infrastructure configuration
-- `K8s` — Kubernetes namespace, deployment, and service configuration
+- `Manifest-file` — Kubernetes namespace, deployment, and service configuration
 - `.github/workflows` — GitHub Actions CI/CD workflows
 
 This separation keeps application, infrastructure, Kubernetes, and automation concerns organized.
